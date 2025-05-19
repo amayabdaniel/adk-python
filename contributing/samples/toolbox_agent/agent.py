@@ -12,20 +12,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import logging
+from google.adk.agents import Agent
+from google.adk.tools import ToolboxToolset
 
-logger = logging.getLogger('google_adk.' + __name__)
-
-__all__ = []
-
-try:
-  from .agent_evaluator import AgentEvaluator
-
-  __all__.append('AgentEvaluator')
-except ImportError:
-  logger.debug(
-      'The Vertex[eval] sdk is not installed. If you want to use the Vertex'
-      ' Evaluation with agents, please install it(pip install'
-      ' "google-cloud-aiplatform[evaluation]). If not, you can ignore this'
-      ' warning.'
-  )
+root_agent = Agent(
+    model="gemini-2.0-flash",
+    name="root_agent",
+    instruction="You are a helpful assistant",
+    # Add Toolbox tools to ADK agent
+    tools=[
+        ToolboxToolset(
+            server_url="http://127.0.0.1:5000", toolset_name="my-toolset"
+        )
+    ],
+)
